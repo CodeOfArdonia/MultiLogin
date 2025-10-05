@@ -13,7 +13,6 @@ import com.velocitypowered.proxy.protocol.packet.EncryptionResponsePacket;
 import com.velocitypowered.proxy.protocol.packet.ServerLoginPacket;
 import lombok.Getter;
 import moe.caa.multilogin.api.internal.auth.AuthResult;
-import moe.caa.multilogin.api.profile.GameProfile;
 import moe.caa.multilogin.api.internal.logger.LoggerProvider;
 import moe.caa.multilogin.api.internal.main.MultiCoreAPI;
 import moe.caa.multilogin.api.internal.skinrestorer.SkinRestorerResult;
@@ -21,6 +20,7 @@ import moe.caa.multilogin.api.internal.util.reflect.Accessor;
 import moe.caa.multilogin.api.internal.util.reflect.EnumAccessor;
 import moe.caa.multilogin.api.internal.util.reflect.NoSuchEnumException;
 import moe.caa.multilogin.api.internal.util.reflect.ReflectUtil;
+import moe.caa.multilogin.api.profile.GameProfile;
 import moe.caa.multilogin.core.auth.LoginAuthResult;
 import net.kyori.adventure.text.Component;
 
@@ -229,7 +229,7 @@ public class MultiInitialLoginSessionHandler {
                             this.inbound.disconnect(Component.text(result.getKickMessage()));
                         }
                     }
-                } catch (Throwable e){
+                } catch (Throwable e) {
                     LoggerProvider.getLogger().error("An exception occurred while processing validation results.", e);
                     if (isEncrypted()) {
                         getInbound().disconnect(Component.text(multiCoreAPI.getLanguageHandler().getMessage("auth_error")));
@@ -248,7 +248,7 @@ public class MultiInitialLoginSessionHandler {
                 response.getId(),
                 response.getName(),
                 response.getPropertyMap().values().stream().map(s ->
-                        new com.velocitypowered.api.util.GameProfile.Property(s.getName(), s.getValue(), s.getSignature())
+                        new com.velocitypowered.api.util.GameProfile.Property(s.getName(), s.getValue(), s.getSignature() != null ? s.getSignature() : "")
                 ).collect(Collectors.toList())
         );
     }
